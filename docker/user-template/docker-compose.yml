@@ -1,0 +1,163 @@
+# Полный пользовательский стек: SUMO + MATSim + WeBots.
+# Все три сервиса подключены к общей сети sim-shared и видят
+# контейнеры других пользователей по DNS-именам:
+#   korolenkoelizaveta-sumo, ruslanmuhamed123-matsim, kravectrofim-webots, …
+#
+# Первый запуск:
+#   1. Скопируйте .env.example → .env, заполните USER_PREFIX и порты
+#   2. docker compose up -d
+#
+# Межпользовательская связь (пример из Python):
+#   import traci
+#   traci.init(host="ruslanmuhamed123-sumo", port=8813)
+
+name: "${USER_PREFIX:-dev}-sim-stack"
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # SUMO — TraCI-сервер для сетевой симуляции трафика
+  # ---------------------------------------------------------------------------
+  sumo:
+    build:
+      context: ../sumo
+      dockerfile: Dockerfile
+    image: "traffic-sim/sumo:1.27.1"
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-sumo"
+    hostname: "${USER_PREFIX:-dev}-sumo"
+    restart: unless-stopped
+    environment:
+      SUMO_MODE: "${SUMO_MODE:-traci-server}"
+      SUMO_CONFIG: "${SUMO_CONFIG:-/scenarios/default.sumocfg}"
+      TRACI_PORT: "8813"
+      SUMO_NOVNC_PORT: "6080"
+      SCREEN_RES: "${SUMO_SCREEN_RES:-1280x800x24}"
+    ports:
+      - "${TRACI_HOST_PORT:-8813}:8813"
+      - "${SUMO_NOVNC_HOST_PORT:-6083}:6080"
+    volumes:
+      - "${SCENARIOS_PATH:-./scenarios}:/scenarios"
+      - sumo-output:/scenarios/output
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-sumo"
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q ':226D' /proc/net/tcp || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # ---------------------------------------------------------------------------
+  # MATSim — агентная макро-транспортная модель (пакетный прогон)
+  # ---------------------------------------------------------------------------
+  matsim:
+    build:
+      context: ../matsim
+      dockerfile: Dockerfile
+      args:
+        MATSIM_VERSION: "${MATSIM_VERSION:-15.0}"
+    image: "traffic-sim/matsim:${MATSIM_VERSION:-15.0}"
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-matsim"
+    hostname: "${USER_PREFIX:-dev}-matsim"
+    # Batch-процесс: запускается и завершается; не перезапускаем автоматически.
+    restart: "no"
+    profiles:
+      - matsim
+    environment:
+      MATSIM_CONFIG: "${MATSIM_CONFIG:-/matsim/input/config.xml}"
+      MATSIM_HEAP: "${MATSIM_HEAP:-8g}"
+      MATSIM_HEAP_MIN: "${MATSIM_HEAP_MIN:-2g}"
+    volumes:
+      - "${MATSIM_INPUT:-./matsim-scenarios/input}:/matsim/input:ro"
+      - "${MATSIM_OUTPUT:-./matsim-output}:/matsim/output"
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-matsim"
+    deploy:
+      resources:
+        limits:
+          memory: "${MATSIM_MEM_LIMIT:-12g}"
+        reservations:
+          memory: "${MATSIM_MEM_RESERVE:-2g}"
+
+  # ---------------------------------------------------------------------------
+  # WeBots — 3D-симулятор с web streaming
+  # Студенты подключаются через браузер: http://<tailscale-ip>:<STREAM_HOST_PORT>
+  # ---------------------------------------------------------------------------
+  webots:
+    build:
+      context: ../webots
+      dockerfile: Dockerfile
+      args:
+        WEBOTS_TAG: "${WEBOTS_TAG:-R2023b}"
+        WEBOTS_DEB: "${WEBOTS_DEB:-webots_2023b_amd64.deb}"
+    image: "traffic-sim/webots:${WEBOTS_TAG:-R2023b}"
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-webots"
+    hostname: "${USER_PREFIX:-dev}-webots"
+    restart: unless-stopped
+    environment:
+      WEBOTS_VIEWER_PORT: "8080"
+      VIEWER_HOST_PORT: "${VIEWER_HOST_PORT:-8080}"
+      STREAM_HOST_PORT: "${STREAM_HOST_PORT:-1234}"
+      WEBOTS_WORLD: "${WEBOTS_WORLD:-/worlds/default.wbt}"
+      NOVNC_ENABLED: "${NOVNC_ENABLED:-false}"
+      SCREEN_RES: "${WEBOTS_SCREEN_RES:-1920x1080x24}"
+      SUMO_HOST: "${USER_PREFIX:-dev}-sumo"
+      SUMO_PORT: "8813"
+    ports:
+      - "${STREAM_HOST_PORT:-1234}:1234"
+      - "${VIEWER_HOST_PORT:-8080}:8080"
+      - "${NOVNC_HOST_PORT:-6080}:6080"
+    volumes:
+      - "${WORLDS_PATH:-./worlds}:/worlds"
+      - webots-logs:/tmp/webots-logs
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-webots"
+    shm_size: "512m"
+    deploy:
+      resources:
+        limits:
+          memory: "${WEBOTS_MEM_LIMIT:-16g}"
+        # GPU passthrough (раскомментировать при Hyper-V GPU-PV):
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       count: 1
+        #       capabilities: [gpu, display]
+    healthcheck:
+      # WeBots streaming is WebSocket, not HTTP — check port 1234 via /proc/net/tcp6
+      # 1234 decimal = 04D2 hex
+      test: ["CMD-SHELL", "grep -q ':04D2' /proc/net/tcp6 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      sumo:
+        condition: service_started
+        required: false
+
+# -----------------------------------------------------------------------------
+# Тома для персистентного хранения данных (изолированы per-user через prefix)
+# -----------------------------------------------------------------------------
+volumes:
+  sumo-output:
+    name: "${USER_PREFIX:-dev}-sumo-output"
+  webots-logs:
+    name: "${USER_PREFIX:-dev}-webots-logs"
+
+# -----------------------------------------------------------------------------
+# Сеть: подключаемся к уже существующей sim-shared (создана infrastructure/)
+# -----------------------------------------------------------------------------
+networks:
+  sim-shared:
+    external: true
+    name: sim-shared

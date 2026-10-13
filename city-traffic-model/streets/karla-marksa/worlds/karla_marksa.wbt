@@ -1,0 +1,91 @@
+#VRML_SIM R2023b utf8
+# WeBots world: ул. Карла Маркса (Irkutsk)
+# Layout: place this file in a Webots project as worlds/karla_marksa.wbt
+# with controllers/sumo_supervisor/ and worlds/karla_marksa_net/.
+# Prefer: streets/karla-marksa/scripts/run_webots.sh
+#
+# IMPORTABLE EXTERNPROTO: required so sumo_supervisor can spawn vehicle models at runtime
+# (same set as projects/vehicles/worlds/city_traffic.wbt).
+# Viewpoint/ground are rewritten by scripts/sync_webots_net.sh from net convBoundary.
+
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/bmw/BmwX5Simple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/citroen/CitroenCZeroSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/toyota/ToyotaPriusSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/lincoln/LincolnMKZSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/range_rover/RangeRoverSportSVRSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/tesla/TeslaModel3Simple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/mercedes_benz/MercedesBenzSprinterSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/BusSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/TruckSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/TruckTrailerSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/TruckTankSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/ScooterSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/ScooterDriver.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/MotorbikeSimple.proto"
+IMPORTABLE EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/vehicles/protos/generic/MotorbikeDriver.proto"
+
+WorldInfo {
+  info [
+    "Irkutsk — ul. Karla Marksa traffic demo"
+    "SUMO ↔ WeBots via sumo_supervisor (TraCI)"
+  ]
+  title "Karla Marksa"
+  ERP 0.6
+  basicTimeStep 20
+  lineScale 5
+}
+Viewpoint {
+  orientation -0.5773 0.5773 0.5773 2.0944
+  position 1906.53 1009.59 2406.94
+  near 5
+  far 12034.72
+  fieldOfView 1.050
+}
+Background {
+  skyColor [ 0.55 0.7 0.9 ]
+}
+DirectionalLight {
+  ambientIntensity 0.8
+  direction 0.3 -1 -0.4
+  intensity 1.2
+}
+Solid {
+  translation 1906.53 1009.59 -0.05
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.35 0.35 0.35
+        }
+      }
+      geometry Box {
+        size 4575.67 2423.00 0.1
+      }
+    }
+  ]
+  name "ground"
+  boundingObject Box {
+    size 4575.67 2423.00 0.1
+  }
+}
+DEF SUMO_INTERFACE Robot {
+  children [
+    Group {
+    }
+  ]
+  name "sumo interface"
+  controller "sumo_supervisor"
+  supervisor TRUE
+  synchronization TRUE
+  controllerArgs [
+    "--no-gui"
+    "--no-netconvert"
+    "--port=8873"
+    "--seed=1"
+    "--step=500"
+    "--radius=200"
+    "--max-vehicles=80"
+    "--sumo-arguments=--end 3600 --no-step-log"
+    "--verbose"
+  ]
+}

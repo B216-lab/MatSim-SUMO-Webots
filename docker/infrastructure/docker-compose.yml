@@ -1,0 +1,26 @@
+# Декларация сети sim-shared — используется как справочник параметров.
+# Сеть создаётся командой: make network-up  (из директории docker/)
+# что эквивалентно:
+#   docker network create \
+#     --driver bridge \
+#     --subnet 172.20.0.0/16 \
+#     --gateway 172.20.0.1 \
+#     sim-shared
+#
+# Этот файл нельзя запустить через docker compose up напрямую —
+# Docker Compose требует хотя бы один сервис.
+
+name: sim-infrastructure
+
+networks:
+  sim-shared:
+    name: sim-shared
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+    labels:
+      project: "traffic-sim"
+      managed-by: "sim-infrastructure"

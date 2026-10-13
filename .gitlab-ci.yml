@@ -1,0 +1,4 @@
+# Repo root wrapper. Prefer this as the CI config path (default),
+# or keep Settings → CI config = city-traffic-model/.gitlab-ci.yml
+include:
+  - local: city-traffic-model/.gitlab-ci.yml

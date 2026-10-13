@@ -1,0 +1,276 @@
+# Monorepo: CI_PROJECT_DIR is repo root. Scenario code lives under city-traffic-model/.
+# Jobs use traffic-sim images directly (no nested docker run). Nested docker + socket
+# mounts $CI_PROJECT_DIR on the HOST, where that path does not exist → empty mounts / fail.
+variables:
+  CTM: city-traffic-model
+  SUMO_IMAGE: traffic-sim/sumo:1.27.1
+  WEBOTS_IMAGE: traffic-sim/webots:R2023b
+  MATSIM_IMAGE: traffic-sim/matsim:15.0
+  SIM_END: "60"
+
+stages:
+  - validate
+  - simulate
+  - visualize
+  - report
+
+ci:smoke:
+  stage: validate
+  image: alpine:3.20
+  script:
+    - echo "CI reachable on webots-vm"
+    - ls -la "$CTM"
+  tags: [webots-vm]
+
+# =============================================================================
+# CITY BASE (MVP placeholder: copy of karla-marksa network, not full-city OSM)
+# =============================================================================
+
+city:validate:
+  stage: validate
+  image:
+    name: $SUMO_IMAGE
+    entrypoint: [""]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/base/**/*
+  script:
+    # City demand must be MATSim-exported routes (m_* vehicles), not empty/random.
+    - test -f "$CTM/base/demand/irkutsk.rou.xml"
+    - grep -q '<vehicle id="m_' "$CTM/base/demand/irkutsk.rou.xml"
+    - sumo
+        --net-file "$CTM/base/network/irkutsk.net.xml"
+        --route-files "$CTM/base/demand/irkutsk.rou.xml"
+        --no-step-log --end 60 --xml-validation never
+  tags: [webots-vm]
+
+city:simulate:
+  stage: simulate
+  image:
+    name: $SUMO_IMAGE
+    entrypoint: [""]
+  needs: [city:validate]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/base/**/*
+  script:
+    - mkdir -p output/city
+    - |
+      sumo --net-file "$CTM/base/network/irkutsk.net.xml" \
+           --route-files "$CTM/base/demand/irkutsk.rou.xml" \
+           --remote-port 8813 --no-step-log --end 60 --xml-validation never &
+      sleep 3
+      PYTHONPATH=/usr/share/sumo/tools python3 "$CTM/base/scripts/metrics.py" > output/city/metrics.json
+      wait
+  artifacts:
+    paths: [output/city/metrics.json]
+    expire_in: 7 days
+  tags: [webots-vm]
+
+city:matsim:
+  stage: simulate
+  image:
+    name: $MATSIM_IMAGE
+    entrypoint: [""]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+  script:
+    - mkdir -p output/matsim /matsim/input
+    - cp "$CTM/base/matsim/network.xml" "$CTM/base/matsim/population.xml" /matsim/input/
+    - |
+      OUT="$CI_PROJECT_DIR/output/matsim"
+      CONFIG="$CI_PROJECT_DIR/$CTM/base/matsim/config.xml"
+      sed "s|value=\"/matsim/output\"|value=\"${OUT}\"|" "$CONFIG" > /tmp/matsim-ci-config.xml
+      cd /matsim
+      java -Xms2g -Xmx8g -XX:+UseG1GC \
+        -cp "/matsim/matsim.jar:/matsim/libs/*" \
+        org.matsim.run.RunMatsim \
+        /tmp/matsim-ci-config.xml
+    # Export MATSim plans → SUMO route files used by city/street simulations.
+    - |
+      PLANS="$CI_PROJECT_DIR/output/matsim/output_plans.xml.gz"
+      if [ ! -f "$PLANS" ]; then
+        PLANS="$(ls "$CI_PROJECT_DIR"/output/matsim/output_plans.xml* | head -1)"
+      fi
+      "$CTM/base/scripts/export_matsim_demand.sh" "$PLANS"
+      mkdir -p output/matsim/sumo-demand
+      cp "$CTM/base/demand/irkutsk.rou.xml" \
+         "$CTM/streets/karla-marksa/demand/street_matsim.rou.xml" \
+         output/matsim/sumo-demand/
+  artifacts:
+    paths: [output/matsim/]
+    expire_in: 30 days
+    when: always
+  tags: [webots-vm]
+
+# =============================================================================
+# ул. Карла Маркса
+# =============================================================================
+
+karla-marksa:validate:
+  stage: validate
+  image:
+    name: $SUMO_IMAGE
+    entrypoint: [""]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/streets/karla-marksa/**/*
+        - city-traffic-model/base/network/**/*
+        - city-traffic-model/.gitlab-ci.yml
+  script:
+    # Require MATSim-derived demand (not randomTrips) for this street scenario.
+    - grep -q 'street_matsim.rou.xml' "$CTM/streets/karla-marksa/config/simulation.sumocfg"
+    - test -f "$CTM/streets/karla-marksa/demand/street_matsim.rou.xml"
+    - grep -q '<vehicle id="m_' "$CTM/streets/karla-marksa/demand/street_matsim.rou.xml"
+    - sumo
+        --configuration-file "$CTM/streets/karla-marksa/config/simulation.sumocfg"
+        --no-step-log --end 60 --xml-validation never
+  tags: [webots-vm]
+
+karla-marksa:simulate:
+  stage: simulate
+  image:
+    name: $SUMO_IMAGE
+    entrypoint: [""]
+  needs: [karla-marksa:validate]
+  # MATSim corridor demand is sparse early; 300s yields a meaningful vehicle sample.
+  variables:
+    SIM_END: "300"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/streets/karla-marksa/**/*
+        - city-traffic-model/base/network/**/*
+        - city-traffic-model/.gitlab-ci.yml
+  script:
+    - mkdir -p output/karla-marksa
+    - |
+      sumo --configuration-file "$CTM/streets/karla-marksa/config/simulation.sumocfg" \
+           --remote-port 8817 --no-step-log --end "$SIM_END" --xml-validation never &
+      sleep 3
+      TRACI_PORT=8817 SUMO_HOST=localhost SIM_END="$SIM_END" \
+        PYTHONPATH=/usr/share/sumo/tools \
+        python3 "$CTM/streets/karla-marksa/scripts/traci_monitor.py" > output/karla-marksa/metrics.json
+      wait
+  artifacts:
+    paths: [output/karla-marksa/metrics.json]
+    expire_in: 7 days
+    expose_as: "karla-marksa metrics"
+  tags: [webots-vm]
+
+# Manual SUMO-GUI MP4 (Xvfb + ffmpeg x11grab). Uses MATSim routes from simulation.sumocfg.
+karla-marksa:sumo-visualize:
+  stage: visualize
+  image:
+    name: $SUMO_IMAGE
+    entrypoint: [""]
+  needs: [karla-marksa:simulate]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/streets/karla-marksa/**/*
+        - city-traffic-model/.gitlab-ci.yml
+      when: manual
+  variables:
+    SUMO_RECORD_SECONDS: "300"
+    SCREEN_RES: "1280x720x24"
+  script:
+    - mkdir -p output/karla-marksa
+    - cd "$CTM/streets/karla-marksa"
+    - ./scripts/record_sumo_gui.sh
+        --config config/simulation.sumocfg
+        --gui-settings config/gui-settings.xml
+        --seconds "$SUMO_RECORD_SECONDS"
+        --output "$CI_PROJECT_DIR/output/karla-marksa/sumo_simulation.mp4"
+    - test -s "$CI_PROJECT_DIR/output/karla-marksa/sumo_simulation.mp4"
+  artifacts:
+    paths: [output/karla-marksa/sumo_simulation.mp4]
+    expire_in: 30 days
+    expose_as: "karla-marksa SUMO simulation"
+  tags: [webots-vm]
+
+# Manual WeBots MP4 capture (ffmpeg x11grab via image entrypoint). MATSim routes via sync.
+karla-marksa:visualize:
+  stage: visualize
+  image:
+    name: $WEBOTS_IMAGE
+    entrypoint: [""]
+  needs: [karla-marksa:simulate]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/streets/karla-marksa/**/*
+        - city-traffic-model/.gitlab-ci.yml
+      when: manual
+  variables:
+    WEBOTS_RECORD_SECONDS: "300"
+    SCREEN_RES: "1280x720x24"
+    LIBGL_ALWAYS_SOFTWARE: "1"
+  script:
+    - mkdir -p output/karla-marksa
+    - cd "$CTM/streets/karla-marksa"
+    - ./scripts/sync_webots_net.sh
+    # Shorten SUMO end for CI clip (world + synced sumocfg default to 3600s).
+    # Never pass --step-length in --sumo-arguments: supervisor already adds it from --step=500;
+    # SUMO 1.18+ rejects duplicate CLI options and never opens TraCI → empty MP4.
+    - sed -i 's/--end 3600/--end '"$WEBOTS_RECORD_SECONDS"'/' worlds/karla_marksa.wbt
+    - sed -i 's/ --step-length 0\.5//' worlds/karla_marksa.wbt
+    - sed -i 's/--radius=200/--radius=0/' worlds/karla_marksa.wbt
+    - sed -i 's/<end value="3600"\/>/<end value="'"$WEBOTS_RECORD_SECONDS"'"\/>/' worlds/karla_marksa_net/sumo.sumocfg
+    # Build WeBots project layout (worlds/ + controllers/) like run_webots.sh
+    - mkdir -p webots_project/worlds webots_project/controllers
+    - cp -f worlds/karla_marksa.wbt webots_project/worlds/
+    - cp -a worlds/karla_marksa_net webots_project/worlds/
+    - tar -C /usr/local/webots/projects/default/controllers -cf - sumo_supervisor
+        | tar -C webots_project/controllers -xf -
+    - export WEBOTS_WORLD="$PWD/webots_project/worlds/karla_marksa.wbt"
+    - export WEBOTS_RECORD_MP4="$CI_PROJECT_DIR/output/karla-marksa/simulation.mp4"
+    - /usr/local/bin/entrypoint.sh
+    - test -s "$CI_PROJECT_DIR/output/karla-marksa/simulation.mp4"
+  after_script:
+    - |
+      MP4="$CI_PROJECT_DIR/output/karla-marksa/simulation.mp4"
+      if [ -f "$MP4" ]; then
+        BYTES=$(wc -c < "$MP4" | tr -d ' ')
+        echo "WeBots MP4 size: ${BYTES} bytes"
+        if [ "$BYTES" -gt 1048576 ]; then
+          echo "If artifact upload fails with HTTP 413, raise nginx client_max_body_size on ilab-irk.ru GitLab."
+          echo "See wiki/projects/traffic-sim/gitlab-artifact-upload-limits.md"
+        fi
+      fi
+  artifacts:
+    paths: [output/karla-marksa/simulation.mp4]
+    expire_in: 30 days
+    expose_as: "karla-marksa 3D simulation"
+  tags: [webots-vm]
+
+karla-marksa:report:
+  stage: report
+  image: python:3.12-slim
+  needs: [karla-marksa:simulate]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+    - changes:
+        - city-traffic-model/streets/karla-marksa/**/*
+        - city-traffic-model/.gitlab-ci.yml
+  script:
+    - python3 "$CTM/scripts/generate_report.py"
+        --metrics output/karla-marksa/metrics.json
+        --street karla-marksa
+        --output output/karla-marksa/report.html
+  artifacts:
+    paths: [output/karla-marksa/report.html]
+    expose_as: "karla-marksa Simulation Report"
+    expire_in: 30 days
+  tags: [webots-vm]

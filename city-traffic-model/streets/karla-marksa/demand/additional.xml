@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional>
+    <!-- Detectors / custom additions go here.
+         PT stops are loaded from ptstops.xml via simulation.sumocfg. -->
+</additional>

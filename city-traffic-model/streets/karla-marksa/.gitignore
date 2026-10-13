@@ -1,0 +1,7 @@
+output/
+config/tripinfo.xml
+config/summary.xml
+config/simulation_matsim.sumocfg
+*.err
+webots_project/
+worlds/karla_marksa_net/

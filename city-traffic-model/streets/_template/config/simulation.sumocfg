@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <input>
+        <!-- Базовая сеть города — подключается из /base/network/ -->
+        <net-file value="/base/network/irkutsk.net.xml"/>
+        <!-- Маршруты специфичные для улицы (bbox-filtered или вручную) -->
+        <route-files value="/scenario/demand/street.rou.xml"/>
+        <!-- Дополнительные объекты: остановки ОТ, пешеходы -->
+        <additional-files value="/scenario/demand/additional.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+        <step-length value="0.5"/>
+    </time>
+    <output>
+        <tripinfo-output value="/output/tripinfo.xml"/>
+        <summary-output value="/output/summary.xml"/>
+    </output>
+    <report>
+        <no-step-log value="true"/>
+        <no-warnings value="false"/>
+    </report>
+</configuration>

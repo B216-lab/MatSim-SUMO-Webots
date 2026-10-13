@@ -1,0 +1,19 @@
+<viewsettings>
+    <scheme name="ci_visible">
+        <vehicles vehicleMode="8" vehicleQuality="2"
+                  vehicle_exaggeration="1.5" vehicle_minSize="5" vehicle_constantSize="1"
+                  vehicle_constantSizeSelected="0"/>
+        <persons personMode="0" personQuality="2"
+                 person_exaggeration="1.5" person_minSize="4" person_constantSize="1"/>
+        <containers containerMode="0" containerQuality="2"
+                    container_exaggeration="1.5" container_minSize="4" container_constantSize="1"/>
+        <polys polyMode="0" polyQuality="2"
+               poly_exaggeration="1" poly_minSize="1" poly_constantSize="0"
+               polyName_show="1" polyName_size="70" polyName_color="0,0.45,0.75"
+               polyName_constantSize="1"/>
+    </scheme>
+    <viewport zoom="170" x="1906.53" y="1009.59"/>
+    <delay value="50"/>
+    <decal value="false"/>
+    <antiAliasing value="true"/>
+</viewsettings>

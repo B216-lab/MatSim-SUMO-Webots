@@ -1,0 +1,49 @@
+# Автономный compose для SUMO-сервиса.
+# Используется как фрагмент или запускается напрямую для отладки отдельного сервиса.
+# В продакшне предпочтительнее использовать user-template/docker-compose.yml.
+#
+# Пример запуска:
+#   USER_PREFIX=korolenkoelizaveta TRACI_HOST_PORT=8813 docker compose up -d
+
+name: sumo-standalone
+
+services:
+  sumo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: traffic-sim/sumo:1.27.1
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-sumo"
+    hostname: "${USER_PREFIX:-dev}-sumo"
+    restart: unless-stopped
+    environment:
+      SUMO_MODE: "${SUMO_MODE:-traci-server}"
+      SUMO_CONFIG: "${SUMO_CONFIG:-/scenarios/default.sumocfg}"
+      TRACI_PORT: "8813"
+      SUMO_NOVNC_PORT: "6080"
+      SCREEN_RES: "${SUMO_SCREEN_RES:-1920x1080x24}"
+    ports:
+      # Хостовый порт задаётся через .env, внутри сети всегда 8813.
+      - "${TRACI_HOST_PORT:-8813}:8813"
+    volumes:
+      - "${SCENARIOS_PATH:-../../scenarios}:/scenarios"
+      - sumo-output:/scenarios/output
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-sumo"
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q ':226D' /proc/net/tcp || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  sumo-output:
+
+networks:
+  sim-shared:
+    external: true
+    name: sim-shared

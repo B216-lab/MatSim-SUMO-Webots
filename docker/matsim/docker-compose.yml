@@ -1,0 +1,44 @@
+# Автономный compose для MATSim-сервиса.
+# MATSim — пакетный прогон агентной транспортной модели.
+# После завершения сценария контейнер останавливается (restart: no).
+# Для повторного запуска: docker compose run matsim
+#
+# Пример запуска:
+#   USER_PREFIX=korolenkoelizaveta docker compose up
+
+name: matsim-standalone
+
+services:
+  matsim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MATSIM_VERSION: "${MATSIM_VERSION:-15.0}"
+    image: "traffic-sim/matsim:${MATSIM_VERSION:-15.0}"
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-matsim"
+    hostname: "${USER_PREFIX:-dev}-matsim"
+    restart: "no"
+    environment:
+      MATSIM_CONFIG: "${MATSIM_CONFIG:-/matsim/input/config.xml}"
+      MATSIM_HEAP: "${MATSIM_HEAP:-8g}"
+      MATSIM_HEAP_MIN: "${MATSIM_HEAP_MIN:-2g}"
+    volumes:
+      - "${MATSIM_INPUT:-../../matsim-scenarios/input}:/matsim/input:ro"
+      - "${MATSIM_OUTPUT:-./matsim-output}:/matsim/output"
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-matsim"
+    deploy:
+      resources:
+        limits:
+          memory: "${MATSIM_MEM_LIMIT:-12g}"
+        reservations:
+          memory: "${MATSIM_MEM_RESERVE:-2g}"
+
+networks:
+  sim-shared:
+    external: true
+    name: sim-shared

@@ -1,0 +1,14 @@
+# Пользовательские конфиги с портами и путями — не коммитить
+user-template/.env
+# Но шаблон трекается
+!user-template/.env.example
+
+# Сценарии и выходные данные симуляций
+*/scenarios/
+*/matsim-output/
+*/worlds/*.wbt.bak
+**/output/
+
+# Временные файлы WeBots
+**/.webots/
+**/webots-logs/

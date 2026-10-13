@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config SYSTEM "http://www.matsim.org/files/dtd/config_v2.dtd">
+<config>
+    <module name="global">
+        <param name="coordinateSystem" value="EPSG:32647"/>
+        <param name="numberOfThreads" value="4"/>
+        <param name="randomSeed" value="4711"/>
+    </module>
+    <module name="network">
+        <param name="inputNetworkFile" value="/matsim/input/network.xml"/>
+    </module>
+    <module name="plans">
+        <param name="inputPlansFile" value="/matsim/input/population.xml"/>
+    </module>
+    <module name="controller">
+        <param name="outputDirectory" value="/matsim/output"/>
+        <param name="firstIteration" value="0"/>
+        <param name="lastIteration" value="5"/>
+        <param name="writeEventsInterval" value="5"/>
+        <param name="writePlansInterval" value="5"/>
+        <param name="overwriteFiles" value="deleteDirectoryIfExists"/>
+    </module>
+    <module name="qsim">
+        <param name="startTime" value="00:00:00"/>
+        <param name="endTime" value="30:00:00"/>
+        <param name="flowCapacityFactor" value="1.0"/>
+        <param name="storageCapacityFactor" value="1.0"/>
+        <param name="numberOfThreads" value="4"/>
+        <param name="mainMode" value="car"/>
+    </module>
+    <module name="scoring">
+        <param name="learningRate" value="1.0"/>
+        <param name="brainExpBeta" value="2.0"/>
+        <parameterset type="scoringParameters">
+            <param name="lateArrival" value="-18"/>
+            <param name="earlyDeparture" value="-0"/>
+            <param name="performing" value="+6"/>
+            <param name="waiting" value="-0"/>
+            <parameterset type="modeParams">
+                <param name="mode" value="car"/>
+                <param name="marginalUtilityOfTraveling_util_hr" value="-6.0"/>
+            </parameterset>
+            <parameterset type="modeParams">
+                <param name="mode" value="pt"/>
+            </parameterset>
+            <parameterset type="modeParams">
+                <param name="mode" value="walk"/>
+            </parameterset>
+            <parameterset type="activityParams">
+                <param name="activityType" value="home"/>
+                <param name="typicalDuration" value="12:00:00"/>
+            </parameterset>
+            <parameterset type="activityParams">
+                <param name="activityType" value="work"/>
+                <param name="typicalDuration" value="08:00:00"/>
+            </parameterset>
+        </parameterset>
+    </module>
+    <module name="replanning">
+        <param name="maxAgentPlanMemorySize" value="3"/>
+        <parameterset type="strategysettings">
+            <param name="strategyName" value="ChangeExpBeta"/>
+            <param name="weight" value="0.8"/>
+        </parameterset>
+        <parameterset type="strategysettings">
+            <param name="strategyName" value="ReRoute"/>
+            <param name="weight" value="0.2"/>
+        </parameterset>
+    </module>
+</config>

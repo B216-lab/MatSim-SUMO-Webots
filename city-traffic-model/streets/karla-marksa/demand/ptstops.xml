@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-07-20T18:27:19.918752+08:00 by Eclipse SUMO netconvert 1.27.1
+<netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <type-files value="/usr/share/sumo/data/typemap/osmNetconvert.typ.xml"/>
+        <osm-files value="/home/ubuntu/citytraffic/city-traffic-model/streets/karla-marksa/osm/karla_marksa.osm"/>
+    </input>
+
+    <output>
+        <output-file value="/home/ubuntu/citytraffic/city-traffic-model/streets/karla-marksa/network/karla_marksa.net.xml"/>
+        <output.street-names value="true"/>
+        <ptstop-output value="/home/ubuntu/citytraffic/city-traffic-model/streets/karla-marksa/demand/ptstops.xml"/>
+        <ptline-output value="/home/ubuntu/citytraffic/city-traffic-model/streets/karla-marksa/demand/ptlines.xml"/>
+    </output>
+
+    <projection>
+        <proj.utm value="true"/>
+    </projection>
+
+    <processing>
+        <geometry.remove value="true"/>
+        <edges.join value="true"/>
+    </processing>
+
+    <tls_building>
+        <tls.discard-simple value="true"/>
+        <tls.join value="true"/>
+        <tls.guess-signals value="true"/>
+    </tls_building>
+
+    <ramp_guessing>
+        <ramps.guess value="true"/>
+    </ramp_guessing>
+
+    <edge_removal>
+        <keep-edges.by-vclass value="passenger,bus,tram,pedestrian,bicycle"/>
+        <remove-edges.isolated value="true"/>
+    </edge_removal>
+
+    <junctions>
+        <junctions.join value="true"/>
+    </junctions>
+
+    <report>
+        <verbose value="false"/>
+    </report>
+
+</netconvertConfiguration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <busStop id="-11662999584" name="Художественный музей" lane="-392710156_0" startPos="0.00" endPos="15.00" friendlyPos="true"/>
+    <busStop id="-11664390458" name="Автовокзал" lane="-43881238#2_0" startPos="49.29" endPos="64.29" friendlyPos="true">
+        <access lane="1414197416#2_0" pos="188.83" length="2.18" friendlyPos="1"/>
+        <access lane="1414197416#3_0" pos="0.00" length="15.17" friendlyPos="1"/>
+        <access lane="1414197451#0_0" pos="0.00" length="11.53" friendlyPos="1"/>
+        <access lane="617713457#0_0" pos="0.00" length="22.93" friendlyPos="1"/>
+        <access lane="617713457#1_0" pos="0.00" length="22.91" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-11684217795" name="Институт зрения" lane="-138700366#2_0" startPos="8.01" endPos="23.01" friendlyPos="true"/>
+    <busStop id="-11687427657" name="Управление ВСЖД" lane="-1031538458#0_0" startPos="50.78" endPos="65.78" friendlyPos="true"/>
+    <busStop id="-6347173784" name="Сквер им. Кирова" lane="-87352876#1_0" startPos="23.68" endPos="38.68" friendlyPos="true">
+        <access lane="122211156#1_0" pos="21.97" length="20.10" friendlyPos="1"/>
+        <access lane="1412492787#0_0" pos="2.82" length="16.49" friendlyPos="1"/>
+        <access lane="1412492787#1_0" pos="8.47" length="5.39" friendlyPos="1"/>
+        <access lane="1412492787#2_0" pos="1.27" length="18.74" friendlyPos="1"/>
+        <access lane="677866909#2_0" pos="9.82" length="7.40" friendlyPos="1"/>
+    </busStop>
+    <busStop id="-767671824" name="Художественный музей" lane="-924052030#1_0" startPos="25.17" endPos="40.17" friendlyPos="true"/>
+    <busStop id="-941060524" name="Автовокзал" lane="-139069839_0" startPos="7.82" endPos="22.82" friendlyPos="true"/>
+    <busStop id="11662999583" name="Художественный музей" lane="924052030#0_0" startPos="39.96" endPos="54.96" friendlyPos="true"/>
+    <busStop id="11662999585" name="Цирк" lane="863820000#6_0" startPos="0.00" endPos="11.34" friendlyPos="true"/>
+    <busStop id="11662999592" name="Некрасова" lane="43332793#6_0" startPos="0.00" endPos="12.77" friendlyPos="true"/>
+    <busStop id="11662999597" name="Сквер им. Кирова" lane="780403048#1_0" startPos="33.03" endPos="48.03" friendlyPos="true">
+        <access lane="195680615#1_0" pos="18.29" length="19.19" friendlyPos="1"/>
+        <access lane="195680615#2_0" pos="10.72" length="3.08" friendlyPos="1"/>
+        <access lane="287439344#1_0" pos="40.03" length="23.38" friendlyPos="1"/>
+        <access lane="287808272#0_0" pos="0.00" length="23.82" friendlyPos="1"/>
+        <access lane="50163475#3_0" pos="47.38" length="18.17" friendlyPos="1"/>
+    </busStop>
+    <busStop id="11664370342" name="Карла Либкнехта" lane="48582698#5_0" startPos="12.31" endPos="27.31" friendlyPos="true"/>
+    <busStop id="11664390460" name="Фабрика &quot;Узоры&quot;" lane="44121542#5_0" startPos="0.00" endPos="15.00" friendlyPos="true">
+        <access lane="-255187471#1_0" pos="61.21" length="9.14" friendlyPos="1"/>
+        <access lane="1037507082#0_0" pos="173.28" length="40.40" friendlyPos="1"/>
+        <access lane="1037507083#0_0" pos="0.00" length="19.25" friendlyPos="1"/>
+        <access lane="1495402984#0_0" pos="2.98" length="3.74" friendlyPos="1"/>
+        <access lane="255187471#1_0" pos="0.00" length="13.94" friendlyPos="1"/>
+    </busStop>
+    <busStop id="11664461973" name="Автовокзал" lane="43881238#2_0" startPos="10.74" endPos="25.74" friendlyPos="true">
+        <access lane="1410932827#0_0" pos="17.61" length="2.14" friendlyPos="1"/>
+        <access lane="1414197416#2_0" pos="182.29" length="27.98" friendlyPos="1"/>
+        <access lane="617713457#2_0" pos="0.20" length="33.96" friendlyPos="1"/>
+        <access lane="617713457#3_0" pos="2.83" length="30.65" friendlyPos="1"/>
+        <access lane="617713458_0" pos="0.00" length="31.86" friendlyPos="1"/>
+    </busStop>
+    <busStop id="11664461979" lane="1254780071#1_0" startPos="7.19" endPos="22.19" friendlyPos="true"/>
+    <busStop id="11668601192" name="Экономическая академия" lane="138104747#4_0" startPos="17.23" endPos="32.23" friendlyPos="true"/>
+    <busStop id="11671562943" lane="516053070_0" startPos="25.32" endPos="40.32" friendlyPos="true"/>
+    <busStop id="11675487203" name="Каландаришвили" lane="139232367#7_0" startPos="0.00" endPos="15.00" friendlyPos="true"/>
+    <busStop id="11739121333" name="Иркутск (Автовокзал)" lane="54754414#1_0" startPos="0.00" endPos="15.00" friendlyPos="true">
+        <access lane="-1263504169#2_0" pos="9.39" length="11.76" friendlyPos="1"/>
+        <access lane="1263504169#2_0" pos="29.83" length="6.96" friendlyPos="1"/>
+        <access lane="255187692#2_0" pos="12.92" length="17.82" friendlyPos="1"/>
+        <access lane="255187697#2_0" pos="7.38" length="24.91" friendlyPos="1"/>
+        <access lane="255187702#3_0" pos="18.28" length="30.20" friendlyPos="1"/>
+    </busStop>
+    <trainStop id="13895685150" name="Заводская" lane="550880899#0_0" startPos="0.00" endPos="25.00" friendlyPos="true">
+        <access lane="-346912364_0" pos="38.35" length="202.64" friendlyPos="1"/>
+        <access lane="-451810900#1_0" pos="21.68" length="242.52" friendlyPos="1"/>
+        <access lane="346912366#1_0" pos="188.15" length="195.61" friendlyPos="1"/>
+        <access lane="451810891#0_0" pos="180.08" length="56.25" friendlyPos="1"/>
+        <access lane="451810900#1_0" pos="0.00" length="247.19" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="13895685151" name="Заводская" lane="550880896#2_0" startPos="229.81" endPos="254.81" friendlyPos="true">
+        <access lane="-346912364_0" pos="38.35" length="126.66" friendlyPos="1"/>
+        <access lane="-451810900#1_0" pos="21.68" length="159.76" friendlyPos="1"/>
+        <access lane="346912366#1_0" pos="188.15" length="118.24" friendlyPos="1"/>
+        <access lane="451810891#0_0" pos="199.79" length="13.75" friendlyPos="1"/>
+        <access lane="451810900#1_0" pos="0.00" length="164.40" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13895685164" lane="48784912#0_0" startPos="37.82" endPos="52.82" friendlyPos="true"/>
+    <busStop id="13895685266" name="площадь Декабристов" lane="142033046#3_0" startPos="0.00" endPos="25.00" friendlyPos="true">
+        <access lane="1360936818#1_0" pos="0.20" length="10.01" friendlyPos="1"/>
+        <access lane="1360936818#3_0" pos="0.00" length="4.42" friendlyPos="1"/>
+        <access lane="1360936818#4_0" pos="0.00" length="7.97" friendlyPos="1"/>
+        <access lane="258582942#2_0" pos="11.91" length="11.56" friendlyPos="1"/>
+        <access lane="258582942#3_0" pos="0.16" length="8.58" friendlyPos="1"/>
+    </busStop>
+    <trainStop id="13895685267" name="площадь Декабристов" lane="550880827#4_0" startPos="81.70" endPos="106.70" friendlyPos="true">
+        <access lane="1360936818#1_0" pos="0.20" length="5.54" friendlyPos="1"/>
+        <access lane="1360936818#3_0" pos="0.00" length="7.89" friendlyPos="1"/>
+        <access lane="1360936818#4_0" pos="0.00" length="12.76" friendlyPos="1"/>
+        <access lane="258582942#2_0" pos="11.91" length="15.78" friendlyPos="1"/>
+        <access lane="258582942#3_0" pos="0.00" length="13.89" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13895685269" lane="625182104#5_0" startPos="0.00" endPos="15.00" friendlyPos="true">
+        <access lane="-827369289#0_0" pos="6.44" length="20.16" friendlyPos="1"/>
+        <access lane="1360936818#0_0" pos="0.10" length="9.60" friendlyPos="1"/>
+        <access lane="1360936818#1_0" pos="0.00" length="7.94" friendlyPos="1"/>
+        <access lane="1360936818#3_0" pos="0.00" length="17.60" friendlyPos="1"/>
+        <access lane="827369289#0_0" pos="0.00" length="15.89" friendlyPos="1"/>
+    </busStop>
+    <trainStop id="13928267731" name="Степана Разина" lane="142025788#0_0" startPos="0.00" endPos="25.00" friendlyPos="true">
+        <access lane="-50162748#1_0" pos="97.87" length="57.98" friendlyPos="1"/>
+        <access lane="-65253240#1_0" pos="30.10" length="11.01" friendlyPos="1"/>
+        <access lane="287655123_0" pos="127.21" length="19.58" friendlyPos="1"/>
+        <access lane="50162748#0_0" pos="0.00" length="62.21" friendlyPos="1"/>
+        <access lane="65253240#0_0" pos="227.46" length="3.39" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13928267762" lane="924052030#0_0" startPos="98.33" endPos="113.33" friendlyPos="true"/>
+    <busStop id="13928267765" name="Сухэ-Батора" lane="50163475#3_0" startPos="0.00" endPos="15.00" friendlyPos="true"/>
+    <trainStop id="13928267767" name="Улица Ленина" lane="142025814#14_0" startPos="310.04" endPos="335.04" friendlyPos="true">
+        <access lane="345147438#1_0" pos="0.20" length="66.92" friendlyPos="1"/>
+        <access lane="345147438#2_0" pos="36.35" length="12.11" friendlyPos="1"/>
+        <access lane="44119375#15_0" pos="141.87" length="66.01" friendlyPos="1"/>
+        <access lane="44119375#16_0" pos="2.19" length="64.03" friendlyPos="1"/>
+        <access lane="516673513#2_0" pos="166.38" length="68.95" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="13928267773" name="Институт травматологии и ортопедии" lane="142025814#14_0" startPos="43.97" endPos="68.97" friendlyPos="true">
+        <access lane="-1524544256#1_0" pos="0.00" length="23.54" friendlyPos="1"/>
+        <access lane="139069835#2_0" pos="56.42" length="7.77" friendlyPos="1"/>
+        <access lane="1414038385#0_0" pos="82.13" length="6.77" friendlyPos="1"/>
+        <access lane="1524544256#1_0" pos="60.05" length="20.74" friendlyPos="1"/>
+        <access lane="345147438#8_0" pos="30.45" length="6.66" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="13928267785" name="Центральный рынок" lane="550880903#2_0" startPos="19.52" endPos="44.52" friendlyPos="true">
+        <access lane="-139347071#5_0" pos="25.82" length="0.71" friendlyPos="1"/>
+        <access lane="139347071#5_0" pos="32.09" length="5.51" friendlyPos="1"/>
+        <access lane="1491778147#1_0" pos="18.99" length="13.38" friendlyPos="1"/>
+        <access lane="1491778147#2_0" pos="3.09" length="5.63" friendlyPos="1"/>
+        <access lane="1491778155#3_0" pos="25.81" length="12.63" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13928267786" name="Центральный рынок" lane="139347071#5_0" startPos="8.99" endPos="23.99" friendlyPos="true"/>
+    <trainStop id="13928267787" name="Центральный рынок" lane="142034303#1_0" startPos="21.03" endPos="46.03" friendlyPos="true">
+        <access lane="-139347071#2_0" pos="0.00" length="4.64" friendlyPos="1"/>
+        <access lane="-139347071#3_0" pos="9.67" length="3.57" friendlyPos="1"/>
+        <access lane="139347071#2_0" pos="10.85" length="7.91" friendlyPos="1"/>
+        <access lane="139347071#3_0" pos="0.00" length="7.32" friendlyPos="1"/>
+        <access lane="1491778147#3_0" pos="33.65" length="5.67" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13935564729" lane="48784986#0_0" startPos="24.21" endPos="39.21" friendlyPos="true"/>
+    <trainStop id="13935564730" lane="550880905#2_0" startPos="1.04" endPos="26.04" friendlyPos="true">
+        <access lane="139069835#0_0" pos="48.27" length="9.85" friendlyPos="1"/>
+        <access lane="1414038385#4_0" pos="15.91" length="3.78" friendlyPos="1"/>
+        <access lane="1524544254#0_0" pos="24.85" length="29.38" friendlyPos="1"/>
+        <access lane="1524544254#1_0" pos="0.20" length="28.87" friendlyPos="1"/>
+        <access lane="516673508#1_0" pos="29.64" length="12.42" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13935564735" lane="1254750732_0" startPos="22.54" endPos="37.54" friendlyPos="true"/>
+    <busStop id="13935564744" lane="1254771912#1_0" startPos="27.26" endPos="42.26" friendlyPos="true"/>
+    <trainStop id="13935564753" name="Горная" lane="550880899#1_0" startPos="94.82" endPos="119.82" friendlyPos="true">
+        <access lane="-1529023698#0_0" pos="33.04" length="26.55" friendlyPos="1"/>
+        <access lane="1409251373_0" pos="2.78" length="25.86" friendlyPos="1"/>
+        <access lane="1529023697#1_0" pos="0.20" length="10.22" friendlyPos="1"/>
+        <access lane="1529023697#3_0" pos="0.00" length="7.04" friendlyPos="1"/>
+        <access lane="1529023697#4_0" pos="0.00" length="20.36" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="13935564773" name="Горная" lane="1471908449#1_0" startPos="0.00" endPos="7.85" friendlyPos="true">
+        <access lane="1409251371#1_0" pos="0.20" length="8.68" friendlyPos="1"/>
+        <access lane="1409251371#3_0" pos="0.00" length="3.48" friendlyPos="1"/>
+        <access lane="1409251371#4_0" pos="0.00" length="10.62" friendlyPos="1"/>
+        <access lane="1409251374#1_0" pos="9.91" length="11.42" friendlyPos="1"/>
+        <access lane="1409251428#4_0" pos="7.30" length="12.22" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13935564794" lane="1254780074#0_0" startPos="0.00" endPos="2.55" friendlyPos="true"/>
+    <busStop id="13935564804" lane="48582698#5_0" startPos="12.30" endPos="27.30" friendlyPos="true"/>
+    <busStop id="13935564805" lane="98871111#3_0" startPos="36.64" endPos="51.64" friendlyPos="true"/>
+    <busStop id="13935564831" lane="138104745#3_0" startPos="0.00" endPos="15.00" friendlyPos="true"/>
+    <busStop id="13935564848" lane="139069833#2_0" startPos="10.03" endPos="25.03" friendlyPos="true">
+        <access lane="-826467088#0_0" pos="2.84" length="30.01" friendlyPos="1"/>
+        <access lane="-826467088#1_0" pos="5.14" length="32.32" friendlyPos="1"/>
+        <access lane="1410932828#0_0" pos="17.41" length="10.35" friendlyPos="1"/>
+        <access lane="1491777969#0_0" pos="17.89" length="18.35" friendlyPos="1"/>
+        <access lane="677073870#1_0" pos="0.00" length="32.15" friendlyPos="1"/>
+    </busStop>
+    <trainStop id="13935564849" lane="550880831#5_0" startPos="25.11" endPos="50.11" friendlyPos="true">
+        <access lane="525769337#2_0" pos="43.55" length="8.93" friendlyPos="1"/>
+        <access lane="525769337#3_0" pos="0.20" length="16.89" friendlyPos="1"/>
+        <access lane="525769337#4_0" pos="0.00" length="14.42" friendlyPos="1"/>
+        <access lane="677073871#3_0" pos="0.00" length="18.62" friendlyPos="1"/>
+        <access lane="677073871#4_0" pos="0.00" length="16.92" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="13935564850" lane="550900283#2_0" startPos="45.52" endPos="70.52" friendlyPos="true">
+        <access lane="677073872#1_0" pos="0.20" length="10.24" friendlyPos="1"/>
+        <access lane="677073872#2_0" pos="0.20" length="8.62" friendlyPos="1"/>
+        <access lane="677073872#3_0" pos="0.20" length="6.79" friendlyPos="1"/>
+        <access lane="677073872#4_0" pos="0.00" length="7.74" friendlyPos="1"/>
+        <access lane="694282248_0" pos="5.17" length="11.95" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="13935564864" name="Софьи Перовской" lane="43886143#1_0" startPos="21.96" endPos="36.96" friendlyPos="true"/>
+    <busStop id="1514053963" name="Завод им. Куйбышева" lane="138104759#10_0" startPos="16.61" endPos="31.61" friendlyPos="true"/>
+    <busStop id="1514053971" name="Пролетарская" lane="48784837#6_0" startPos="107.84" endPos="122.84" friendlyPos="true"/>
+    <busStop id="1514053983" name="Институт зрения" lane="138700366#2_0" startPos="41.34" endPos="56.34" friendlyPos="true"/>
+    <busStop id="1516312203" name="Гастроном №1" lane="142347493#3_0" startPos="35.87" endPos="50.87" friendlyPos="true"/>
+    <busStop id="1520862027" name="Цирк" lane="77931421#0_0" startPos="20.52" endPos="35.52" friendlyPos="true"/>
+    <busStop id="1532534396" name="Каландарашвили" lane="139232367#11_0" startPos="8.48" endPos="23.48" friendlyPos="true"/>
+    <trainStop id="1554362787" name="Улица Ленина" lane="550880905#0_0" startPos="0.00" endPos="25.00" friendlyPos="true">
+        <access lane="345147438#1_0" pos="0.20" length="38.91" friendlyPos="1"/>
+        <access lane="345147438#2_0" pos="15.83" length="16.93" friendlyPos="1"/>
+        <access lane="44119375#15_0" pos="141.87" length="39.21" friendlyPos="1"/>
+        <access lane="44119375#16_0" pos="2.19" length="34.47" friendlyPos="1"/>
+        <access lane="516673513#2_0" pos="166.38" length="41.80" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="2913716597" name="площадь графа Сперанского" lane="48785431_0" startPos="108.51" endPos="123.51" friendlyPos="true"/>
+    <trainStop id="5320156384" name="Горького" lane="142025788#4_0" startPos="26.58" endPos="51.58" friendlyPos="true">
+        <access lane="287655388#0_0" pos="44.10" length="6.59" friendlyPos="1"/>
+        <access lane="287655388#1_0" pos="0.00" length="18.70" friendlyPos="1"/>
+        <access lane="287655390#0_0" pos="0.00" length="14.77" friendlyPos="1"/>
+        <access lane="287655390#1_0" pos="0.00" length="16.15" friendlyPos="1"/>
+        <access lane="43878749#0_0" pos="43.82" length="15.78" friendlyPos="1"/>
+    </trainStop>
+    <trainStop id="5320311928" lane="142031813#12_0" startPos="19.41" endPos="44.41" friendlyPos="true">
+        <access lane="1410932834#6_0" pos="216.59" length="20.04" friendlyPos="1"/>
+        <access lane="1410932836#0_0" pos="40.36" length="15.91" friendlyPos="1"/>
+        <access lane="1414197417#0_0" pos="3.47" length="33.87" friendlyPos="1"/>
+        <access lane="1414197417#2_0" pos="0.00" length="33.26" friendlyPos="1"/>
+        <access lane="1414197417#3_0" pos="0.00" length="33.70" friendlyPos="1"/>
+    </trainStop>
+    <busStop id="941025946" name="Филармония" lane="48784986#0_0" startPos="24.21" endPos="39.21" friendlyPos="true"/>
+    <busStop id="941051795" name="Музей декабристов" lane="139069833#2_0" startPos="9.90" endPos="24.90" friendlyPos="true">
+        <access lane="1410932827#3_0" pos="75.33" length="30.66" friendlyPos="1"/>
+        <access lane="1410932828#0_0" pos="17.28" length="2.64" friendlyPos="1"/>
+        <access lane="1491777969#0_0" pos="17.88" length="26.06" friendlyPos="1"/>
+        <access lane="677073870#0_0" pos="0.20" length="30.39" friendlyPos="1"/>
+        <access lane="751235503#0_0" pos="28.33" length="29.93" friendlyPos="1"/>
+    </busStop>
+    <busStop id="941067824" name="Кинотеатр &quot;Пионер&quot;" lane="138104745#3_0" startPos="0.00" endPos="15.00" friendlyPos="true"/>
+</additional>

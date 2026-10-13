@@ -1,0 +1,72 @@
+# Автономный compose для WeBots-сервиса.
+# WeBots запускается headless (Xvfb) с web streaming.
+# Студенты/наблюдатели открывают браузер → http://<tailscale-ip>:<STREAM_HOST_PORT>
+#
+# GPU (RTX 4070 SUPER через Hyper-V GPU-PV):
+#   Раскомментируйте секцию deploy.resources.reservations.devices для GPU-ускорения.
+#
+# Пример запуска:
+#   USER_PREFIX=korolenkoelizaveta STREAM_HOST_PORT=1234 docker compose up -d
+
+name: webots-standalone
+
+services:
+  webots:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WEBOTS_TAG: "${WEBOTS_TAG:-R2023b}"
+        WEBOTS_DEB: "${WEBOTS_DEB:-webots_2023b_amd64.deb}"
+    image: "traffic-sim/webots:${WEBOTS_TAG:-R2023b}"
+    pull_policy: never
+    container_name: "${USER_PREFIX:-dev}-webots"
+    hostname: "${USER_PREFIX:-dev}-webots"
+    restart: unless-stopped
+    environment:
+      WEBOTS_VIEWER_PORT: "8080"
+      VIEWER_HOST_PORT: "${VIEWER_HOST_PORT:-8080}"
+      STREAM_HOST_PORT: "${STREAM_HOST_PORT:-1234}"
+      WEBOTS_WORLD: "${WEBOTS_WORLD:-/worlds/default.wbt}"
+      NOVNC_ENABLED: "${NOVNC_ENABLED:-false}"
+      SCREEN_RES: "${WEBOTS_SCREEN_RES:-1920x1080x24}"
+      # Адрес SUMO для связки WeBots ↔ TraCI
+      SUMO_HOST: "${USER_PREFIX:-dev}-sumo"
+      SUMO_PORT: "8813"
+    ports:
+      # Streaming порт: уникален для каждого пользователя (1234, 1235, 1236…)
+      - "${STREAM_HOST_PORT:-1234}:1234"
+      # noVNC (только если NOVNC_ENABLED=true)
+      - "${NOVNC_HOST_PORT:-6080}:6080"
+    volumes:
+      - "${WORLDS_PATH:-../../worlds}:/worlds"
+      - webots-logs:/tmp/webots-logs
+    networks:
+      sim-shared:
+        aliases:
+          - "${USER_PREFIX:-dev}-webots"
+    shm_size: "512m"
+    deploy:
+      resources:
+        limits:
+          memory: "${WEBOTS_MEM_LIMIT:-16g}"
+        # GPU-PV (раскомментировать при наличии GPU passthrough):
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       count: 1
+        #       capabilities: [gpu, display]
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q ':04D2' /proc/net/tcp6 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  webots-logs:
+
+networks:
+  sim-shared:
+    external: true
+    name: sim-shared

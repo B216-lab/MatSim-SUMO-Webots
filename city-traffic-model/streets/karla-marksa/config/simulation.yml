@@ -1,0 +1,29 @@
+# Параметры сценария улицы
+street_name: "ул. Карла Маркса"
+
+# Bbox для фильтрации маршрутов из базового спроса города
+# Формат: [lon_min, lat_min, lon_max, lat_max]
+bbox: [104.278, 52.278, 104.312, 52.291]
+
+# Продолжительность симуляции (секунды)
+duration: 3600
+
+# Метод генерации спроса:
+# - random  : randomTrips.py (быстрый smoke test; street.rou.xml)
+# - matsim  : MATSim plans exported via base/scripts/export_matsim_demand.sh
+#             → demand/street_matsim.rou.xml (wired in simulation.sumocfg + WeBots sync)
+demand_mode: matsim
+
+# PT: demand/pt.rou.xml is an empty stub from gen_demand.sh and is not wired into
+# simulation.sumocfg (no bus/tram vehicles in this scenario yet). ptstops.xml is
+# loaded as additional geometry only.
+
+# Записывать видео в visualize job?
+webots_record: true
+
+# Порт SUMO TraCI на сервере (8813–8816 заняты на webots-vm)
+traci_port: 8817
+
+# MATSim-filtered routes (must match simulation.sumocfg route-files when demand_mode=matsim)
+matsim_routes: street_matsim.rou.xml
+

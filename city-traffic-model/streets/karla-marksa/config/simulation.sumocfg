@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <input>
+        <net-file value="../network/karla_marksa.net.xml"/>
+        <!-- MATSim-exported corridor demand (see base/scripts/export_matsim_demand.sh) -->
+        <route-files value="../demand/street_matsim.rou.xml"/>
+        <additional-files value="../demand/additional.xml,../demand/ptstops.xml,../demand/street_bounds.poly.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+        <step-length value="0.5"/>
+    </time>
+    <output>
+        <tripinfo-output value="/tmp/karla_marksa_tripinfo.xml"/>
+        <summary-output value="/tmp/karla_marksa_summary.xml"/>
+    </output>
+    <report>
+        <no-step-log value="true"/>
+        <no-warnings value="false"/>
+    </report>
+    <processing>
+        <ignore-route-errors value="true"/>
+    </processing>
+</configuration>

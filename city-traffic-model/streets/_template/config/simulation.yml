@@ -1,0 +1,22 @@
+# Параметры сценария улицы
+# Заполнить при создании нового сценария
+
+street_name: "НАЗВАНИЕ УЛИЦЫ"
+
+# Bbox для фильтрации маршрутов из базового спроса города
+# Формат: [lon_min, lat_min, lon_max, lat_max]
+bbox: [104.28, 52.27, 104.30, 52.29]
+
+# Продолжительность симуляции (секунды)
+duration: 3600
+
+# Метод генерации спроса:
+# - random  : randomTrips.py (быстрый smoke test, не требует внешних данных)
+# - matsim  : использовать output MATSim из base/demand/irkutsk.rou.xml
+demand_mode: random
+
+# Записывать видео в visualize job?
+webots_record: true
+
+# Порт SUMO TraCI на сервере (уникален для каждого разработчика)
+traci_port: 8813

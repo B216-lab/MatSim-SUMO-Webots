@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional>
+  <poly id="street_bounds" type="street_bounds"
+        color="0,0.75,1,0.22" fill="1" layer="1" lineWidth="40"
+        shape="0.00,0.00 3813.06,0.00 3813.06,2019.17 0.00,2019.17 0.00,0.00"/>
+</additional>
