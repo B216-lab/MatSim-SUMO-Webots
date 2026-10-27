@@ -11,9 +11,9 @@
 
 ## AS-IS:
 
-    /- MatSim
-OSM -- SUMO
-    \- Webots
+&emsp;&emsp;/- MatSim \
+OSM - SUMO \
+&emsp;&emsp;\\- Webots
 
 В качестве графа УДС Иркутска берется карта OSM. У уровней есть свои адаптеры для преобразования карты OSM в нужный формат:
 
