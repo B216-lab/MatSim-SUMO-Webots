@@ -1,0 +1,14 @@
+services:
+  django:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      DATA_ROOT: /data
+      DJANGO_SECRET_KEY: dev-change-me
+    volumes:
+      - pipeline-data:/data
+    restart: unless-stopped
+
+volumes:
+  pipeline-data:
